@@ -1,8 +1,22 @@
-# Get-LicensingReport (standalone)
+# Get-M365LicensingReport (standalone)
 
 A shareable PowerShell script that reports Microsoft 365 / Entra **tenant licensing status** for the signed-in tenant: purchased, assigned (consumed), available, and percent used — with Microsoft’s official friendly product names.
 
 This folder is the **self-contained** version intended for other admins to run. The original working script remains at the repository root (`Get-LicensingReportV2.ps1`).
+
+## Install from the PowerShell Gallery
+
+Once published (see [Publishing](#publishing-to-the-powershell-gallery) below):
+
+```powershell
+Install-Script -Name Get-M365LicensingReport -Scope CurrentUser
+# Ensure Graph modules are available
+Install-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser
+
+Get-M365LicensingReport.ps1 -OutputPath ./LicensingReport.csv
+```
+
+Scripts install under your PowerShell scripts path (for example `~/Documents/PowerShell/Scripts` on macOS/Linux, or the equivalent under Documents on Windows). That path is normally on `$env:PATH` after install.
 
 ## What you get
 
@@ -42,7 +56,7 @@ This is a **tenant SKU inventory** report. It does not list per-user assignments
 
 ```powershell
 cd path/to/Entra-LicensingReport/standalone
-./Get-LicensingReport.ps1
+./Get-M365LicensingReport.ps1
 ```
 
 Sign in with an account that has access to the target tenant. The script prints a table and also returns objects to the pipeline.
@@ -50,32 +64,32 @@ Sign in with an account that has access to the target tenant. The script prints 
 ### Export CSV
 
 ```powershell
-./Get-LicensingReport.ps1 -OutputPath ./LicensingReport.csv
+./Get-M365LicensingReport.ps1 -OutputPath ./LicensingReport.csv
 ```
 
 ### Specific tenant
 
 ```powershell
-./Get-LicensingReport.ps1 -TenantId contoso.onmicrosoft.com -OutputPath ./contoso-licenses.csv
+./Get-M365LicensingReport.ps1 -TenantId contoso.onmicrosoft.com -OutputPath ./contoso-licenses.csv
 ```
 
 ### Device code (remote / no browser UI)
 
 ```powershell
-./Get-LicensingReport.ps1 -AuthMode DeviceCode
+./Get-M365LicensingReport.ps1 -AuthMode DeviceCode
 ```
 
 ### Existing Graph session
 
 ```powershell
 Connect-MgGraph -Scopes 'Organization.Read.All'
-./Get-LicensingReport.ps1 -AuthMode None -OutputPath ./report.csv
+./Get-M365LicensingReport.ps1 -AuthMode None -OutputPath ./report.csv
 ```
 
 ### Managed identity (Azure Automation, VM, App Service)
 
 ```powershell
-./Get-LicensingReport.ps1 -AuthMode ManagedIdentity -OutputPath ./LicensingReport.csv
+./Get-M365LicensingReport.ps1 -AuthMode ManagedIdentity -OutputPath ./LicensingReport.csv
 ```
 
 Ensure the identity has **application** permission `Organization.Read.All` on Microsoft Graph (admin consented).
@@ -83,7 +97,7 @@ Ensure the identity has **application** permission `Organization.Read.All` on Mi
 ### Disconnect when finished
 
 ```powershell
-./Get-LicensingReport.ps1 -OutputPath ./report.csv -Disconnect
+./Get-M365LicensingReport.ps1 -OutputPath ./report.csv -Disconnect
 ```
 
 `-Disconnect` only ends the session if **this script** created the connection (not when `-AuthMode None`).
@@ -111,7 +125,7 @@ Ensure the identity has **application** permission `Organization.Read.All` on Mi
 The host table is written with `Out-Host` so it does not pollute the pipeline. Pipeline objects are the full report:
 
 ```powershell
-$report = ./Get-LicensingReport.ps1 -AuthMode None
+$report = ./Get-M365LicensingReport.ps1 -AuthMode None
 $report | Where-Object { $_.AvailableUnits -lt 5 } | Format-Table ProductName, AvailableUnits
 ```
 
@@ -131,7 +145,56 @@ $report | Where-Object { $_.AvailableUnits -lt 5 } | Format-Table ProductName, A
 | Path | Role |
 |------|------|
 | `../Get-LicensingReportV2.ps1` | Original script (unchanged); assumes Graph is already connected |
-| `./Get-LicensingReport.ps1` | Standalone version with connect, export, and clearer output |
+| `./Get-M365LicensingReport.ps1` | Standalone version with connect, export, and clearer output |
+
+## Publishing to the PowerShell Gallery (local)
+
+This script is packaged as a **Gallery script**: metadata lives in the `<#PSScriptInfo ... #>` block at the top of `Get-M365LicensingReport.ps1`.
+
+| Field | Notes |
+|-------|--------|
+| Gallery name | File name without extension: **`Get-M365LicensingReport`** |
+| Version | `.VERSION` in `PSScriptInfo` (bump for every publish; Gallery rejects reuse) |
+| GUID | Stable forever — do not regenerate after first publish |
+| Dependencies | Declared in `.EXTERNALMODULEDEPENDENCIES` |
+
+### One-time setup
+
+1. Create a [PowerShell Gallery](https://www.powershellgallery.com/) account.
+2. Create an API key under account settings.
+3. Keep the key out of git (use an environment variable or secret store).
+
+### Publish from your machine
+
+```powershell
+# From the repository root (PowerShell 7.2+)
+# Optional: install/update PowerShellGet if needed
+# Install-Module PowerShellGet -Force -AllowClobber -Scope CurrentUser
+
+Test-ScriptFileInfo -Path ./standalone/Get-M365LicensingReport.ps1
+
+# Prefer env var so the key is not in shell history as often
+$env:PSGALLERY_API_KEY = 'your-api-key-here'   # or set this outside the session
+
+Publish-Script `
+  -Path ./standalone/Get-M365LicensingReport.ps1 `
+  -NuGetApiKey $env:PSGALLERY_API_KEY `
+  -Repository PSGallery
+```
+
+After a successful publish:
+
+```powershell
+Find-Script -Name Get-M365LicensingReport -Repository PSGallery
+Install-Script -Name Get-M365LicensingReport -Scope CurrentUser
+```
+
+### Updating a later version
+
+1. Bump `.VERSION` in the `PSScriptInfo` block (e.g. `1.0.0` → `1.0.1`).
+2. Update `.RELEASENOTES` if useful.
+3. Leave the **GUID** unchanged.
+4. Run `Test-ScriptFileInfo` and `Publish-Script` again.
 
 ## License
 

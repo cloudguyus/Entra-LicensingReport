@@ -1,3 +1,21 @@
+<#PSScriptInfo
+.VERSION 1.0.0
+.GUID 8e6c8ab7-0ea3-4749-bde0-f9b090d2794d
+.AUTHOR cloudguyus
+.COMPANYNAME
+.COPYRIGHT
+.TAGS Microsoft365 Entra Graph Licensing M365 Sku
+.LICENSEURI https://github.com/cloudguyus/Entra-LicensingReport/blob/main/LICENSE
+.PROJECTURI https://github.com/cloudguyus/Entra-LicensingReport
+.ICONURI
+.EXTERNALMODULEDEPENDENCIES Microsoft.Graph.Authentication,Microsoft.Graph.Identity.DirectoryManagement
+.REQUIREDSCRIPTS
+.EXTERNALSCRIPTDEPENDENCIES
+.RELEASENOTES
+Initial release as Get-M365LicensingReport. Graph-connected M365/Entra licensing inventory with optional CSV export.
+.PRIVATEDATA
+#>
+
 #Requires -Version 7.2
 #Requires -Modules Microsoft.Graph.Authentication, Microsoft.Graph.Identity.DirectoryManagement
 
@@ -11,6 +29,9 @@
     available, and percent used — with friendly product names.
 
     Requires PowerShell 7.2 or later (Windows, macOS, or Linux).
+
+    Install from the PowerShell Gallery (after publish):
+      Install-Script -Name Get-M365LicensingReport -Scope CurrentUser
 
 .PARAMETER TenantId
     Optional Entra tenant ID (GUID) or verified domain. Used when connecting.
@@ -35,19 +56,19 @@
     script established the connection).
 
 .EXAMPLE
-    ./Get-LicensingReport.ps1
+    ./Get-M365LicensingReport.ps1
 
     Interactive sign-in; prints a table to the host.
 
 .EXAMPLE
-    ./Get-LicensingReport.ps1 -TenantId contoso.onmicrosoft.com -OutputPath ./report.csv
+    Get-M365LicensingReport.ps1 -TenantId contoso.onmicrosoft.com -OutputPath ./report.csv
 
 .EXAMPLE
     Connect-MgGraph -Scopes 'Organization.Read.All'
-    ./Get-LicensingReport.ps1 -AuthMode None
+    Get-M365LicensingReport.ps1 -AuthMode None
 
 .EXAMPLE
-    ./Get-LicensingReport.ps1 -AuthMode ManagedIdentity -OutputPath ./report.csv
+    Get-M365LicensingReport.ps1 -AuthMode ManagedIdentity -OutputPath ./report.csv
 #>
 
 [CmdletBinding()]

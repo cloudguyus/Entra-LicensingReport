@@ -25,7 +25,7 @@ There are three entry points. Pick the one that matches how controlled your lice
 
 | Path | Role |
 |------|------|
-| [standalone/Get-LicensingReport.ps1](standalone/Get-LicensingReport.ps1) | Shareable end-to-end report (PowerShell 7.2+) |
+| [standalone/Get-M365LicensingReport.ps1](standalone/Get-M365LicensingReport.ps1) | Shareable end-to-end report (PowerShell 7.2+) |
 | [standalone/README.md](standalone/README.md) | Full docs for the standalone script (auth, parameters, troubleshooting) |
 | [Get-LicensingReportV2.ps1](Get-LicensingReportV2.ps1) | Modular V2 helper: download map → get SKUs → join usage |
 | [Get-LicensingReport-V1.ps1](Get-LicensingReport-V1.ps1) | V1 **sample**: embedded friendly-name map, managed identity, HTML email report (customize for your tenant) |
@@ -36,6 +36,8 @@ There are three entry points. Pick the one that matches how controlled your lice
 
 Self-contained script for other tenants: connects to Graph, maps SKUs via Microsoft’s official CSV, prints a table, optionally writes CSV.
 
+Prepared for the **PowerShell Gallery as a script** (`PSScriptInfo` metadata; publish locally with `Publish-Script`). See [standalone/README.md](standalone/README.md#publishing-to-the-powershell-gallery-local).
+
 ### Prerequisites
 
 - PowerShell **7.2+** (Windows, macOS, or Linux)
@@ -43,11 +45,21 @@ Self-contained script for other tenants: connects to Graph, maps SKUs via Micros
 - Graph permission: **`Organization.Read.All`**
 - Network access to Graph and Microsoft’s product-names download
 
+### From the PowerShell Gallery (after first publish)
+
+```powershell
+Install-Script -Name Get-M365LicensingReport -Scope CurrentUser
+Install-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser
+Get-M365LicensingReport.ps1 -OutputPath ./LicensingReport.csv
+```
+
+### From this repository
+
 ```powershell
 Install-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.DirectoryManagement -Scope CurrentUser
 
 cd ./standalone
-./Get-LicensingReport.ps1 -OutputPath ./LicensingReport.csv
+./Get-M365LicensingReport.ps1 -OutputPath ./LicensingReport.csv
 ```
 
 Other modes: `-AuthMode DeviceCode`, `-AuthMode ManagedIdentity`, `-AuthMode None` (existing session), `-TenantId`, `-Disconnect`.
