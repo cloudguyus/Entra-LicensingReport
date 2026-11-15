@@ -1,0 +1,114 @@
+name: Bug report
+description: Report a problem running a licensing report script
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        > [!CAUTION]
+        > **Do not paste tenant IDs, tenant names, user names, tokens, or license counts you consider sensitive.**
+        > Redact them before submitting. Use placeholders such as `<tenant-id>`, `<tenant>`, `<user>`, and `<redacted>`.
+
+  - type: dropdown
+    id: script
+    attributes:
+      label: Script
+      description: Which script were you running?
+      options:
+        - standalone/Get-M365LicensingReport.ps1 from PowerShell Gallery
+        - standalone/Get-M365LicensingReport.ps1 from repo
+        - Get-LicensingReportV2.ps1
+        - Get-LicensingReport-V1.ps1
+    validations:
+      required: true
+
+  - type: input
+    id: script-version
+    attributes:
+      label: Script version
+      description: For the standalone script, the PSScriptInfo `.VERSION` at the top of the file, or the version reported by `Get-InstalledScript Get-M365LicensingReport`. For a copy from this repo, the commit SHA or "repo main" is fine.
+      placeholder: "e.g. 1.0.0"
+
+  - type: textarea
+    id: powershell-version
+    attributes:
+      label: PowerShell version
+      description: Paste `$PSVersionTable` (PSVersion is the important line; PSEdition and OS help too).
+      placeholder: |
+        Name                           Value
+        ----                           -----
+        PSVersion                      7.4.6
+        PSEdition                      Core
+      render: shell
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      description: Where the script ran.
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Azure Automation
+        - Other
+
+  - type: textarea
+    id: graph-modules
+    attributes:
+      label: Microsoft Graph module versions
+      description: Versions of the Microsoft Graph modules that were loaded or installed.
+      placeholder: |
+        Get-Module Microsoft.Graph.Authentication, Microsoft.Graph.Identity.DirectoryManagement -ListAvailable | Select-Object Name, Version
+      render: shell
+
+  - type: dropdown
+    id: auth-mode
+    attributes:
+      label: AuthMode used
+      description: Value of `-AuthMode` for the standalone script. Choose N/A for V1, V2, or when you did not pass `-AuthMode`.
+      options:
+        - Interactive
+        - DeviceCode
+        - ManagedIdentity
+        - None
+        - N/A
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: What went wrong? Do not include tenant IDs, tenant names, user names, tokens, or license counts you consider sensitive.
+      placeholder: Describe the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What was expected
+      description: What you expected to happen instead.
+      placeholder: Describe the expected behavior.
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Commands you ran, in order. Redact tenant IDs, tenant names, user names, tokens, and sensitive license counts.
+      placeholder: |
+        1. Install or open the script
+        2. Run it with ...
+        3. See the error
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: Error output
+      description: Paste the error text only. Redact tenant IDs, tenant names, user names, tokens, and license counts you consider sensitive.
+      render: shell

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage questions
+    url: https://github.com/cloudguyus/Entra-LicensingReport#readme
+    about: Read the repository README for which script to use and how to run it. Please use that instead of opening a blank issue.
+  - name: Standalone troubleshooting
+    url: https://github.com/cloudguyus/Entra-LicensingReport/blob/main/standalone/README.md#troubleshooting
+    about: Check the standalone script troubleshooting guide before opening a bug report.
