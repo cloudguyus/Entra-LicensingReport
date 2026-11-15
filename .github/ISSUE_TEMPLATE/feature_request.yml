@@ -1,0 +1,62 @@
+name: Feature request
+description: Suggest an improvement or a new capability for a licensing report script
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Describe the problem first, then the change you want.
+
+        > [!CAUTION]
+        > **Do not paste tenant IDs, tenant names, user names, tokens, or license counts you consider sensitive.**
+        > Redact them before submitting.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / use case
+      description: What are you trying to do, and what gets in the way today?
+      placeholder: When I run the report, I need to ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should change, and how would you use it?
+      placeholder: Add a parameter or output column that ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you thought about, and why they are not enough.
+      placeholder: I could work around this by ...
+
+  - type: dropdown
+    id: script
+    attributes:
+      label: Script
+      description: Which script should this apply to?
+      options:
+        - standalone/Get-M365LicensingReport.ps1 from PowerShell Gallery
+        - standalone/Get-M365LicensingReport.ps1 from repo
+        - Get-LicensingReportV2.ps1
+        - Get-LicensingReport-V1.ps1
+        - New script / not sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Willingness to contribute
+      description: Optional. Let us know if you want to help build this.
+      options:
+        - label: I am willing to contribute a pull request for this
+          required: false
